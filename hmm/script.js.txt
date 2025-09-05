@@ -1,0 +1,60 @@
+function playMusic() {
+  const audio = document.getElementById("birthdaySong");
+  audio.play();
+}
+
+// 🎉 Einfaches Konfetti
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confetti = [];
+
+function createConfetti() {
+  for (let i = 0; i < 150; i++) {
+    confetti.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 6 + 2,
+      d: Math.random() * 10 + 2,
+      color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+      tilt: Math.floor(Math.random() * 10) - 5
+    });
+  }
+}
+
+function drawConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  confetti.forEach((c, i) => {
+    ctx.beginPath();
+    ctx.lineWidth = c.r;
+    ctx.strokeStyle = c.color;
+    ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+    ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+    ctx.stroke();
+  });
+
+  updateConfetti();
+}
+
+function updateConfetti() {
+  confetti.forEach((c, i) => {
+    c.y += Math.cos(c.d) + 1 + c.r / 2;
+    c.x += Math.sin(0.5);
+
+    if (c.y > canvas.height) {
+      confetti[i].y = -10;
+      confetti[i].x = Math.random() * canvas.width;
+    }
+  });
+}
+
+function animate() {
+  drawConfetti();
+  requestAnimationFrame(animate);
+}
+
+createConfetti();
+animate();
